@@ -2,8 +2,6 @@
 
 namespace Installer;
 
-use Installer\Exceptions\InstallException;
-
 /**
  * @readme Usage.Tokens Tokens
  *
@@ -24,16 +22,25 @@ use Installer\Exceptions\InstallException;
 class Tokens
 {
     /**
+     * @var string
+     */
+    private $content;
+
+    private $file;
+
+    /**
      * Short cut for reading the `config/app.php` file with the `config/app.default.php` file used for defaults.
      *
      * @param string $rootDir The path to the app folder.
      *
      * @returns Tokens An instance of the `Tokens` class.
+     * @throws \FileNotFoundException If the file or the default file can not be found.
      */
     public static function AppConfig($rootDir)
     {
         $appConfig = $rootDir.'/config/app.php';
         $defaultConfig = $rootDir.'/config/app.default.php';
+
         return new Tokens($appConfig, $defaultConfig);
     }
 
@@ -43,21 +50,23 @@ class Tokens
      * @param string      $file The file to read.
      * @param string|null $default (optional) The default file.
      *
-     * @throws InstallException If the file or the default file can not be found.
+     * @throws \FileNotFoundException If the file or the default file can not be found.
      */
     public function __construct($file, $default = null)
     {
-    }
-
-    /**
-     * Checks if a token exists in the file.
-     *
-     * @param string $key The token to find.
-     *
-     * @returns boolean True if token exists.
-     */
-    public function exists($key)
-    {
+        $this->file = $file;
+        if (file_exists($file))
+        {
+            $this->content = file_get_contents($file);
+        }
+        else
+        {
+            if ($default === null || !file_exists($default))
+            {
+                throw new \FileNotFoundException($default === null ? $file : $default);
+            }
+            $this->content = file_get_contents($default);
+        }
     }
 
     /**
@@ -66,9 +75,20 @@ class Tokens
      * @param string $key
      * @param string $value
      *
-     * @returns boolean True if a match was found.
+     * @returns Tokens
      */
     public function set($key, $value)
     {
+        $this->content = str_replace($key, $value, $this->content);
+
+        return $this;
+    }
+
+    /**
+     * Saves the file.
+     */
+    public function save()
+    {
+        file_put_contents($this->file, $this->content);
     }
 }
