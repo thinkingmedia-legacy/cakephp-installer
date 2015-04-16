@@ -1,15 +1,20 @@
 {
-    "name": "thinkingmedia/cakephp-installer",
-    "description": "CakePHP 3.0 console classes for installing and configuring an application.",
-    "require": {
-        "thinkingmedia/underscore": "~1.0"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "thinkingmedia",
-            "email": "mathew@thinkingmedia.ca"
-        }
-    ],
-    "minimum-stability": "dev"
+  "name": "thinkingmedia/cakephp-installer",
+  "description": "CakePHP 3.0 console classes for installing and configuring an application.",
+  "require": {
+    "thinkingmedia/underscore": "~1.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "thinkingmedia",
+      "email": "mathew@thinkingmedia.ca"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Installer\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
 }
