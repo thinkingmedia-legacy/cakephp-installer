@@ -1,6 +1,6 @@
 <?php
 
-namespace Installer\Config;
+namespace Installer;
 
 use Installer\Exceptions\InstallException;
 
@@ -9,12 +9,15 @@ use Installer\Exceptions\InstallException;
  *
  * The `Tokens` class lets you replace tokens in the `app.php` file with new string values.
  *
+ * An example of reading the `app.php` from the `src/Console/Installer.php` post-install script.
+ *
  * ```PHP
- * $app = \Installer\Tokens::AppConfig();
- * $app->set('__SALT__', Installer\Hash::create());
- * $app->set('__DB_NAME__','database');
- * $app->set('__DB_USER__','username');
- * $app->set('__DB_PASS__',Installer\Hash::create(16));
+ * $rootDir = dirname(dirname(__DIR__));
+ * $app = \Installer\Tokens::AppConfig($rootDir);
+ * $app->set('__SALT__', Installer\Hash::salt());
+ * $app->set('__DB_NAME__', 'database');
+ * $app->set('__DB_USER__', 'username');
+ * $app->set('__DB_PASS__', \Installer\Hash::mysql_password());
  * $app->save();
  * ```
  */
@@ -23,12 +26,12 @@ class Tokens
     /**
      * Short cut for reading the `config/app.php` file with the `config/app.default.php` file used for defaults.
      *
+     * @param string $rootDir The path to the app folder.
+     *
      * @returns Tokens An instance of the `Tokens` class.
      */
-    public static function AppConfig()
+    public static function AppConfig($rootDir)
     {
-        // @todo this is the wrong directory
-        $rootDir = dirname(dirname(__DIR__));
         $appConfig = $rootDir.'/config/app.php';
         $defaultConfig = $rootDir.'/config/app.default.php';
         return new Tokens($appConfig, $defaultConfig);

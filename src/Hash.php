@@ -1,6 +1,6 @@
 <?php
 
-namespace Installer\Config;
+namespace Installer;
 
 /**
  * @readme Usage.Hash Hash
@@ -19,5 +19,19 @@ class Hash
     public static function generate()
     {
         return 'asdasd';
+    }
+
+    /**
+     * @returns string
+     */
+    public static function salt()
+    {
+    }
+
+    /**
+     * @returns string
+     */
+    public static function mysql_password()
+    {
     }
 }
