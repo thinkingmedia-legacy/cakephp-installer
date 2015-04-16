@@ -13,4 +13,11 @@ namespace Installer\Config;
  */
 class Hash
 {
+    /**
+     * @return string
+     */
+    public static function generate()
+    {
+        return 'asdasd';
+    }
 }

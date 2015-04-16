@@ -32,15 +32,32 @@ class AppConfig
      */
     public function __construct()
     {
-        if (!file_exists(self::getPath()))
+        $path = self::getPath();
+        if (!file_exists($path))
         {
-            throw new InstallException("File not found: /config/app.php");
+            $path = self::getDefaultPath();
+        }
+        if (!file_exists($path))
+        {
+            throw new InstallException('File not found: '.$path);
         }
         $this->content = file_get_contents(self::getPath());
     }
 
     /**
-     * Calculates the path to the app.php file.
+     * Gets the path to the app.default.php file.
+     *
+     * @return string
+     */
+    private static function getDefaultPath()
+    {
+        $rootDir = dirname(dirname(__DIR__));
+
+        return $rootDir.'/config/app.default.php';
+    }
+
+    /**
+     * Gets the path to the app.php file.
      *
      * @return string
      */
@@ -51,15 +68,21 @@ class AppConfig
         return $rootDir.'/config/app.php';
     }
 
-    public function setSalt()
+    /**
+     * Sets the SALT property in the app.php
+     *
+     * @param string $name
+     */
+    public function setSalt($name = '__SALT__')
     {
+        $this->setToken($name, Hash::generate());
     }
 
     /**
      * Performs a simple search and replace on a token.
      *
-     * @param {string} $name
-     * @param {string} $value
+     * @param string $name
+     * @param string $value
      */
     public function setToken($name, $value)
     {
