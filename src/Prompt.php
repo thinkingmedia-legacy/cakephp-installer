@@ -1,49 +1,78 @@
 <?php
+
+namespace Installer;
+
 use Cake\Console\ConsoleIo;
+use React\Promise\Deferred;
 
 /**
  * @readme Usage.Prompt Prompt
  *
- * The `Prompt` class handles interacting with the user.
+ * The `Prompt` class handles interacting with the user using Promises.
  */
 class Prompt
 {
-    const DEFAULT_YES = 1;
-    const DEFAULT_NO = 2;
-
+    /**
+     * @var ConsoleIo
+     */
     private $io;
 
     /**
      * Prompts the user to confirm a Yes or No question.
      *
      * @param string $msg The prompt message.
-     * @param int    $mode The default response for non-interactive mode, or just pressing enter.
+     * @param string $default The default response for non-interactive mode, or just pressing enter.
      *
-     * @returns \React\Promise
+     * @returns \React\Promise\Promise
      */
-    public static function Confirm($msg, $mode = Prompt::DEFAULT_NO)
+    public static function Confirm($msg, $default = 'N')
     {
-        $prompt = new Prompt($msg);
+        $prompt = new Prompt([
+                                 ['text' => $msg, 'type' => 'char', 'default' => $default]
+                             ]);
 
-        return $prompt;
+        return $prompt->show();
     }
 
     /**
      * Prompts the user to verify the key/value pairs in an array.
      *
-     * @param array $options
+     * @param string $msg The message for the prompt.
+     * @param array  $options The key/value pairs for the user to edit.
      *
-     * @returns \React\Promise
+     * @returns \React\Promise\Promise
      */
-    public static function Options(array $options)
+    public static function Options($msg, array $options)
     {
-        $prompt = new Prompt($options);
+        $arr = array_map(function ($key, $value)
+        {
+            return ['text' => $key, 'type' => 'string', 'default' => $value];
+        }, $options);
 
-        return $prompt;
+        $prompt = new Prompt($arr);
+
+        return $prompt->show();
     }
 
-    public function __construct(array $options)
+    /**
+     * Constructor
+     *
+     * @param array $options
+     */
+    private function __construct(array $options)
     {
         $this->io = new ConsoleIO();
+    }
+
+    /**
+     * @returns \React\Promise\Promise
+     */
+    public function show()
+    {
+        $deferred = new Deferred();
+        $this->io->out('hello');
+        $deferred->reject(false);
+
+        return $deferred->promise();
     }
 }
