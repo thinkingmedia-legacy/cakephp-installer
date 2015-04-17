@@ -3,7 +3,7 @@
   "description": "CakePHP 3.0 console classes for installing and configuring an application.",
   "require": {
     "thinkingmedia/underscore": "~1.0",
-    "react/promise": "~2.0@dev"
+    "react/promise": "~2.2"
   },
   "license": "MIT",
   "authors": [
